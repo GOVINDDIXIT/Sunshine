@@ -8,6 +8,7 @@ import com.example.android.sunshine.AppExecutors;
 import com.example.android.sunshine.R;
 import com.example.android.sunshine.data.database.WeatherEntry;
 import com.example.android.sunshine.databinding.ActivityDetailBinding;
+import com.example.android.sunshine.utilities.InjectorUtils;
 import com.example.android.sunshine.utilities.SunshineDateUtils;
 import com.example.android.sunshine.utilities.SunshineWeatherUtils;
 
@@ -39,6 +40,9 @@ public class DetailActivity extends LifecycleActivity {
         mViewModel.getWeather().observe(this, weatherEntry -> {
             if (weatherEntry != null) bindWeatherToUI(weatherEntry);
         });
+
+        // THIS IS JUST TO RUN THE CODE; REPOSITORY SHOULD NEVER BE CREATED IN DETAILACTIVITY
+        InjectorUtils.provideRepository(this).initializeData();
 
         AppExecutors.getInstance().diskIO().execute(()-> {
             try {
