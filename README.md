@@ -1,11 +1,11 @@
-Sunshine with Architecture Components
+Sunshine
 ================================
 ## About
-This app is for the [Build an App with Architecture Components Codelab](Todo link).
+This app is created following the latest android architecture components.
 
-## Starting Classes
+## Architecture : MVVM
 
-Below is a description of the different packages and classes in the starting app code:
+Below is a description of the different packages and classes present in this app:
 
 ### `data` package
 Contains all classes related to local and network app data.
@@ -42,18 +42,7 @@ All activities and adapters - anything to do with display.
 ### AppExectuors class
 This class provides a global executor pool. You can learn more about thread pools here. In short, this class provides an easy and efficient way to run code off of the main thread.
 
-## License
-All image and audio files (including *.png, *.jpg, *.svg, *.mp3, *.wav
-and *.ogg) are licensed under the CC-BY-NC license. All other files are
-licensed under the Apache 2 license. See the LICENSE file for details.
-Copyright 2017 Google Inc. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+
+### References
+[Google Code Lab](https://codelabs.developers.google.com/codelabs/build-app-with-arch-components/)
 
