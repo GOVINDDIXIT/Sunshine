@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.sunshine">
 
     <!-- This permission is necessary in order for Sunshine to perform network access. -->
@@ -15,37 +14,36 @@
 
         <!--The manifest entry for our MainActivity. Each Activity requires a manifest entry-->
         <activity
-            android:name="com.example.android.sunshine.ui.list.MainActivity"
+            android:name=".ui.list.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Forecast">
-        </activity>
-
-        <!--The manifest entry for our DetailActivity. Each Activity requires a manifest entry-->
-        <activity
-            android:name="com.example.android.sunshine.ui.detail.DetailActivity"
-            android:label="@string/title_activity_detail"
-            android:parentActivityName="com.example.android.sunshine.ui.list.MainActivity"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.android.sunshine.ui.list.MainActivity"
-                tools:replace="android:value"/>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
+        <!--The manifest entry for our DetailActivity. Each Activity requires a manifest entry-->
+        <activity
+            android:name=".ui.detail.DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".ui.list.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.list.MainActivity"/>
+        </activity>
+
 
         <!--This is required for immediate syncs -->
         <service
-            android:name="com.example.android.sunshine.data.network.SunshineSyncIntentService"
+            android:name=".data.network.SunshineSyncIntentService"
             android:exported="false" />
 
         <!-- This is the Service declaration used in conjunction with FirebaseJobDispatcher -->
         <service
-            android:name="com.example.android.sunshine.data.network.SunshineFirebaseJobService"
+            android:name=".data.network.SunshineFirebaseJobService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>

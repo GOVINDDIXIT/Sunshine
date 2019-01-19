@@ -7,6 +7,10 @@ import com.example.android.sunshine.AppExecutors;
 import com.example.android.sunshine.data.database.WeatherDao;
 import com.example.android.sunshine.data.database.WeatherEntry;
 import com.example.android.sunshine.data.network.WeatherNetworkDataSource;
+import com.example.android.sunshine.utilities.SunshineDateUtils;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Handles data operations in Sunshine. Acts as a mediator between {@link WeatherNetworkDataSource}
@@ -29,9 +33,15 @@ public class SunshineRepository {
         mWeatherDao = weatherDao;
         mWeatherNetworkDataSource = weatherNetworkDataSource;
         mExecutors = executors;
+
+        // As long as the repository exists, observe the network LiveData.
+        // If that LiveData changes, update the database.
         LiveData<WeatherEntry[]> networkData = mWeatherNetworkDataSource.getCurrentWeatherForecasts();
         networkData.observeForever(newForecastsFromNetwork -> {
             mExecutors.diskIO().execute(() -> {
+                // Deletes old historical data
+                deleteOldData();
+                Log.d(LOG_TAG, "Old weather deleted");
                 // Insert our new weather data into Sunshine's database
                 mWeatherDao.bulkInsert(newForecastsFromNetwork);
                 Log.d(LOG_TAG, "New values inserted");
@@ -57,25 +67,41 @@ public class SunshineRepository {
      * Creates periodic sync tasks and checks to see if an immediate sync is required. If an
      * immediate sync is required, this method will take care of making sure that sync occurs.
      */
-    public synchronized void initializeData() {
+    private synchronized void initializeData() {
 
         // Only perform initialization once per app lifetime. If initialization has already been
         // performed, we have nothing to do in this method.
         if (mInitialized) return;
         mInitialized = true;
 
-        startFetchWeatherService();
+        mExecutors.diskIO().execute(() -> {
+            if (isFetchNeeded()) {
+                startFetchWeatherService();
+            }
+        });
     }
 
     /**
      * Database related operations
      **/
 
+    public LiveData<List<WeatherEntry>> getCurrentWeatherForecasts() {
+        initializeData();
+        Date today = SunshineDateUtils.getNormalizedUtcDateForToday();
+        return mWeatherDao.getCurrentWeatherForecasts(today);
+    }
+
+    public LiveData<WeatherEntry> getWeatherByDate(Date date) {
+        initializeData();
+        return mWeatherDao.getWeatherByDate(date);
+    }
+
     /**
      * Deletes old weather data because we don't need to keep multiple days' data
      */
     private void deleteOldData() {
-        // TODO Finish this method when instructed
+        Date today = SunshineDateUtils.getNormalizedUtcDateForToday();
+        mWeatherDao.deleteOldWeather(today);
     }
 
     /**
@@ -84,8 +110,9 @@ public class SunshineRepository {
      * @return Whether a fetch is needed
      */
     private boolean isFetchNeeded() {
-        // TODO Finish this method when instructed
-        return true;
+        Date today = SunshineDateUtils.getNormalizedUtcDateForToday();
+        int count = mWeatherDao.countAllFutureWeather(today);
+        return (count < WeatherNetworkDataSource.NUM_DAYS);
     }
 
     /**
