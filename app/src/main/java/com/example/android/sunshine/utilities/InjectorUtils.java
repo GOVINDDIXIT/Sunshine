@@ -7,6 +7,8 @@ import com.example.android.sunshine.data.SunshineRepository;
 import com.example.android.sunshine.data.database.SunshineDatabase;
 import com.example.android.sunshine.data.network.WeatherNetworkDataSource;
 import com.example.android.sunshine.ui.detail.DetailViewModelFactory;
+import com.example.android.sunshine.ui.list.MainViewModelFactory;
+
 import java.sql.Date;
 
 /**
@@ -23,6 +25,9 @@ public class InjectorUtils {
     }
 
     public static WeatherNetworkDataSource provideNetworkDataSource(Context context) {
+        // This call to provide repository is necessary if the app starts from a service - in this
+        // case the repository will not exist unless it is specifically created.
+        provideRepository(context.getApplicationContext());
         AppExecutors executors = AppExecutors.getInstance();
         return WeatherNetworkDataSource.getInstance(context.getApplicationContext(), executors);
     }
@@ -31,10 +36,10 @@ public class InjectorUtils {
         SunshineRepository repository = provideRepository(context.getApplicationContext());
         return new DetailViewModelFactory(repository, date);
     }
-//
-//    public static MainViewModelFactory provideMainActivityViewModelFactory(Context context) {
-//        SunshineRepository repository = provideRepository(context.getApplicationContext());
-//        return new MainViewModelFactory(repository);
-//    }
+
+    public static MainViewModelFactory provideMainActivityViewModelFactory(Context context) {
+        SunshineRepository repository = provideRepository(context.getApplicationContext());
+        return new MainViewModelFactory(repository);
+    }
 
 }
